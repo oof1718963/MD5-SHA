@@ -1,32 +1,42 @@
+from tkinter import *
+from tkinter import filedialog as fd
+import hashlib
 
-from cryptography.fernet import Fernet
+root=Tk()
+root.geometry("250x190")
+root.config(bg = "#f7ea7c")
 
-key = Fernet.generate_key()
+def apply_md5():
+    print("MD5 function")
+    text_file = fd.askopenfilename(title = "Open Text File",filetypes = (("Text Files","*.txt"),))
+    print(text_file)
+    read_file = open(text_file,'r')
+    
+    paragraph = read_file.read()
+    file_result = hashlib.md5(paragraph.encode())
+    file_hexd = file_result.hexdigest()
+    md5_file = open("md5.txt",'w')
+    md5_file.write(file_hexd)
+    print(file_hexd)
+    md5_file.close()
+    
+def apply_sha256():
+    print("SHA function")   
+    text_file = fd.askopenfilename(title = "Open Text File",filetypes = (("Text Files","*.txt"),))
+    print(text_file)
+    read_file = open(text_file,'r')
+    
+    paragraph = read_file.read()
+    file_result = hashlib.sha256(paragraph.encode())
+    file_hexd = file_result.hexdigest()
+    sha256_file = open(".txt",'w')
+    sha256_file.write(file_hexd)
+    print(file_hexd)
+    sha256_file.close()
+    
+btn=Button(root, text="Apply MD5",command=apply_md5,relief = FLAT,bg = "#f1b51a",fg = "white")
+btn.place(relx=0.3,rely=0.5, anchor=CENTER)
+btn1=Button(root, text="Apply SHA256",command=apply_sha256,relief = FLAT,bg = "#f1b51a",fg = "white")
+btn1.place(relx=0.7,rely=0.5, anchor=CENTER)
 
-with open('mykey.key', 'wb') as mykey:
-    mykey.write(key)
-
-    with open('mykey.key', 'rb') as mykey:
-        key = mykey.read()
-
-    print(key)
-
-f = Fernet(key)
-
-with open('grades.csv', 'rb') as original_file:
-    original = original_file.read()
-
-encrypted = f.encrypt(original)
-
-with open ('enc_grades.csv', 'wb') as encrypted_file:
-    encrypted_file.write(encrypted)
-
-f = Fernet(key)
-
-with open('enc_grades.csv', 'rb') as encrypted_file:
-    encrypted = encrypted_file.read()
-
-decrypted = f.decrypt(encrypted)
-
-with open('dec_grades.csv', 'wb') as decrypted_file:
-    decrypted_file.write(decrypted)
+root.mainloop()
